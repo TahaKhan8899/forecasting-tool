@@ -1,0 +1,12 @@
+# Core API
+fastapi>=0.103.0
+uvicorn[standard]>=0.23.0
+
+# Settings and environment
+pydantic>=2.4.0
+pydantic-settings>=2.0.0
+python-dotenv>=1.0.0
+
+# Database
+sqlalchemy[asyncio]>=2.0.0
+asyncpg>=0.28.0 

@@ -1,0 +1,48 @@
+---
+description: 
+globs: app/**/*.py
+alwaysApply: false
+---
+---
+description: Enforces the project's layered application architecture.
+globs: ["app/**/*.py"]
+---
+# Architecture Enforcement
+
+Guide AI to place code in the correct architectural layer (API, Service, CRUD, Models, Schemas).
+
+<rule>
+name: layered_architecture
+description: Ensures code placement follows the API -> Service -> CRUD -> DB structure.
+filters:
+  - type: intent
+    pattern: "(create|implement|add|define)_.*(endpoint|route|logic|query|database|model|schema)"
+  - type: content
+    # Look for database logic outside crud, business logic outside services, etc.
+    pattern: "(db\\.execute|session\\.exec).*(app/api/|app/services/)|(calculate|process|complex_logic).*(app/api/|app/crud/)"
+
+actions:
+  - type: reject
+    conditions:
+      # Reject direct DB calls from API layer
+      - pattern: "(db\\.execute|session\\.exec|select\\(|update\\(|insert\\(|delete\\().*\\n.*@router\\."
+        target_path: "app/api/"
+        message: "API endpoints in `app/api/` should not perform direct database operations. Call functions in the Service layer (`app/services/`) instead."
+      # Reject complex business logic in API layer
+      - pattern: "(if.*else|for.*in.*\\n.*calculate|process_data.*\\n.*@router\\.)" # Simplified pattern
+        target_path: "app/api/"
+        message: "Complex business logic should reside in the Service layer (`app/services/`), not directly in API endpoints."
+      # Reject complex business logic in CRUD layer
+      - pattern: "(if.*else|for.*in.*\\n.*calculate|process_data)" # Simplified pattern
+        target_path: "app/crud/"
+        message: "CRUD functions (`app/crud/`) should only handle direct database interactions. Place complex business logic in the Service layer (`app/services/`)."
+
+  - type: suggest
+    message: |
+      Follow the project architecture:
+      1. API Layer (`app/api/`): Handles HTTP requests/responses, calls Service layer. Keep thin.
+      2. Service Layer (`app/services/`): Contains core business logic, calls CRUD layer.
+      3. CRUD Layer (`app/crud/`): Handles direct database operations using SQLAlchemy models.
+      4. Models (`app/models/`): SQLAlchemy ORM definitions.
+      5. Schemas (`app/schemas/`): Pydantic API data definitions.
+</rule>

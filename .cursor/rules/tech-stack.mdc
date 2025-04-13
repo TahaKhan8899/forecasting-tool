@@ -1,0 +1,41 @@
+---
+description: 
+globs: *.py,*.toml,*.lock,Dockerfile
+alwaysApply: false
+---
+---
+description: Enforces the use of the project's defined technology stack.
+globs: ["*.py", "*.toml", "*.lock", "Dockerfile"]
+---
+# Technology Stack Enforcement
+
+Ensure generated code and suggestions adhere to the project's technology stack.
+
+<rule>
+name: tech_stack_enforcement
+description: Ensures usage of FastAPI, Python 3.11+, Pydantic V2, SQLAlchemy 2.0 async, Supabase/Postgres, Pytest.
+filters:
+  - type: intent
+    pattern: "(install|configure|use|import)_.*(library|framework|database|tool)"
+  - type: content
+    # Look for mentions of alternative tech
+    pattern: "(?i)\\b(flask|django|mongodb|mysql|unittest|requests-sql|sqlmodel|beanie|mongoengine|node|express|typescript)\\b"
+
+actions:
+  - type: reject
+    conditions:
+      # Reject if suggesting disallowed tech for core tasks
+      - pattern: "(?i)(use|install|configure|import).*(flask|django|mongodb|mysql|unittest|sqlmodel|beanie|mongoengine)"
+        message: "Project standard is FastAPI, Supabase(Postgres), SQLAlchemy 2.0 async, Pydantic V2, and Pytest. Do not use Flask, Django, NoSQL DBs, other ORMs, or unittest for core functionality."
+      - pattern: "(?i)(use|write|code).*(node|express|typescript)"
+        message: "This is a Python/FastAPI project. Do not suggest Node.js or TypeScript code for the backend."
+  - type: suggest
+    message: |
+      Remember the project's core tech stack:
+      - Backend: FastAPI with Python 3.11+
+      - Database: Supabase (PostgreSQL)
+      - ORM: SQLAlchemy 2.0 (async API with asyncio)
+      - Validation: Pydantic V2
+      - Testing: Pytest
+      - Async: Use `async`/`await` extensively for I/O.
+</rule>

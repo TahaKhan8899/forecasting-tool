@@ -1,0 +1,32 @@
+---
+description: 
+globs: app/api/**/*.py,app/main.py,app/services/**/*.py
+alwaysApply: false
+---
+---
+description: Enforces common FastAPI conventions and best practices.
+globs: ["app/api/**/*.py", "app/main.py", "app/services/**/*.py"]
+---
+# FastAPI Conventions
+
+Ensure adherence to FastAPI best practices.
+
+<rule>
+name: fastapi_best_practices
+description: Guides usage of async, dependency injection, Pydantic schemas, and APIRouter.
+filters:
+  - type: content
+    pattern: "@app\\.|@router\\.|Depends\\(|FastAPI\\(|APIRouter\\(|async def|BaseModel"
+
+actions:
+  - type: suggest
+    message: |
+      FastAPI Best Practices:
+      - Use `async def` for all path operation functions and any I/O-bound operations.
+      - Use `APIRouter` to structure endpoints by feature in `app/api/v1/endpoints/`.
+      - Use Pydantic models (`app/schemas/`) for request body validation and `response_model`.
+      - Inject dependencies (like DB sessions, current user) using `Depends` (`app/api/deps.py`).
+      - Return Pydantic models or standard types from endpoints, let FastAPI handle JSON serialization.
+      - Implement proper status codes (e.g., `201 Created` for POST, `204 No Content` for DELETE).
+      - Utilize FastAPI's exception handling mechanisms.
+</rule>

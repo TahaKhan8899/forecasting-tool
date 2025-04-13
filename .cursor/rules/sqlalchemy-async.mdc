@@ -1,0 +1,34 @@
+---
+description: 
+globs: app/crud/**/*.py,app/services/**/*.py,app/db/session.py,app/api/deps.py
+alwaysApply: false
+---
+---
+description: Enforces usage of SQLAlchemy 2.0 async patterns.
+globs: ["app/crud/**/*.py", "app/services/**/*.py", "app/db/session.py", "app/api/deps.py"]
+---
+# SQLAlchemy Async Conventions
+
+Ensure correct usage of SQLAlchemy 2.0 async features with asyncio.
+
+<rule>
+name: sqlalchemy_async_usage
+description: Guides the use of AsyncSession, async engine, await, select, exec.
+filters:
+  - type: content
+    pattern: "(Session|select|execute|scalar|scalars|commit|refresh|AsyncSession|create_async_engine)"
+  - type: file_path
+    pattern: "(app/crud/|app/services/|app/db/|app/api/deps\\.py)"
+
+actions:
+  - type: suggest
+    message: |
+      SQLAlchemy Async Best Practices:
+      - Use `create_async_engine` and `async_sessionmaker` for setup (`app/db/session.py`).
+      - Type hint database sessions as `AsyncSession` from `sqlalchemy.ext.asyncio`.
+      - Use `async with session.begin():` for transactions or `await session.commit()` explicitly after operations.
+      - Use `await session.execute(select(...))` to execute statements.
+      - Use `result.scalar()` or `result.scalars().all()` or `.first()` etc. to retrieve results from the execution result. Use `await` before these calls.
+      - Ensure database functions in `app/crud/` and calling service functions are `async def`.
+      - Pass the `AsyncSession` using FastAPI's `Depends`.
+</rule>
