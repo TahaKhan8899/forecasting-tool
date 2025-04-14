@@ -11,6 +11,7 @@ A robust backend API system built with FastAPI to automate the collection, calcu
 - AI-powered predictive forecasting for spend, revenue, and profitability
 - "What-if" scenario analysis capabilities
 - Database persistence for historical data
+- Structured JSON logging for observability
 
 ## Technology Stack
 
@@ -22,6 +23,7 @@ A robust backend API system built with FastAPI to automate the collection, calcu
 - **Testing:** Pytest
 - **API Specification:** OpenAPI 3+
 - **Environment Variables:** python-dotenv
+- **Logging:** Structlog + python-json-logger
 - **Server:** Uvicorn
 - **Version Control:** Git / GitHub
 

@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "AI-Powered Forecasting Tool"
     API_V1_STR: str = "/api/v1"
     DATABASE_URL: str
+    
+    # Logging configuration
+    LOG_LEVEL: str = "INFO"
 
     class Config:
         env_file = ".env"
