@@ -34,6 +34,7 @@ actions:
       Remember the project's core tech stack:
       - Backend: FastAPI with Python 3.11+
       - Database: Supabase (PostgreSQL)
+      - Dependecy management: Poetry
       - ORM: SQLAlchemy 2.0 (async API with asyncio)
       - Validation: Pydantic V2
       - Testing: Pytest
