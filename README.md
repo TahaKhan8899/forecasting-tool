@@ -45,29 +45,17 @@ A robust backend API system built with FastAPI to automate the collection, calcu
    cd ai-powered-forecasting-tool
    ```
 
-3. Create a virtual environment:
+3. Install Poetry (if you haven't already):
    ```bash
-   python -m venv .venv
+   curl -sSL https://install.python-poetry.org | python3 -
    ```
 
-4. Activate the virtual environment:
-
-   - **macOS/Linux**:
-     ```bash
-     source .venv/bin/activate
-     ```
-   
-   - **Windows**:
-     ```bash
-     .venv\Scripts\activate
-     ```
-
-5. Install dependencies:
+4. Install dependencies using Poetry:
    ```bash
-   pip install -r requirements.txt
+   poetry install
    ```
 
-6. Set up environment variables:
+5. Set up environment variables:
    - Copy the example environment file:
      ```bash
      cp .env.example .env
@@ -80,7 +68,7 @@ A robust backend API system built with FastAPI to automate the collection, calcu
 Start the development server with:
 
 ```bash
-uvicorn app.main:app --reload
+poetry run uvicorn app.main:app --reload
 ```
 
 The API will be available at http://127.0.0.1:8000
@@ -99,7 +87,7 @@ These documentation pages allow you to explore the available endpoints and test 
 To run the test suite:
 
 ```bash
-pytest
+poetry run pytest
 ```
 
 ## License
