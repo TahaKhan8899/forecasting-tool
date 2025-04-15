@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, HttpUrl, Field
+from pydantic import BaseModel, HttpUrl, Field, ConfigDict
 
 
 class StoreBase(BaseModel):
@@ -31,8 +31,7 @@ class StoreRead(StoreBase):
     created_at: datetime
     updated_at: datetime
     
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Store(StoreRead):
@@ -40,5 +39,4 @@ class Store(StoreRead):
     
     access_token: str
     
-    class Config:
-        orm_mode = True 
+    model_config = ConfigDict(from_attributes=True) 

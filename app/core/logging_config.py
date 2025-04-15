@@ -4,7 +4,7 @@ import structlog
 import time
 import uuid
 from typing import Optional, Callable
-from pythonjsonlogger import jsonlogger
+from pythonjsonlogger import json as jsonlogger
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.types import ASGIApp
