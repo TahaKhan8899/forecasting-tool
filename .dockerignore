@@ -1,0 +1,64 @@
+# Git-related files
+# These files are not needed in the Docker image
+.git/
+.gitignore
+
+# Docker-related files
+# No need to include Dockerfile itself in the build
+Dockerfile
+.dockerignore
+
+# Python virtual environment directories
+# These should not be copied into the image as we create a new environment
+.venv/
+venv/
+ENV/
+
+# Python cache and compiled files
+# These are platform-specific and should be regenerated in the container
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Operating system files
+# These are not relevant to the application
+.DS_Store
+._*
+
+# IDE and editor files
+# Development environment configurations are not needed in production
+.vscode/
+.idea/
+
+# Test files and directories
+# Tests are not needed in the production image
+tests/
+pytest.ini
+.pytest_cache/
+coverage.xml
+htmlcov/
+
+# Configuration and secrets files
+# Sensitive information should be passed via environment variables, not files
+.env
+.env.*
+!.env.example  # Keep example env file for reference
+
+# Documentation and context files
+# These are typically not needed at runtime
+docs/
+project_context/
+README.md
+*.md
+
+# Database migration files
+# Migrations are typically run separately or in a dedicated step
+alembic/
+alembic.ini
+
+# Log, temporary and swap files
+# Runtime-generated files should not be in the image
+*.log
+*.tmp
+*.swp 

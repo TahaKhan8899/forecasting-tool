@@ -75,6 +75,102 @@ poetry run uvicorn app.main:app --reload
 
 The API will be available at http://127.0.0.1:8000
 
+## Running with Docker (Recommended)
+
+This is the recommended way to run the application consistently, mirroring a production-like environment.
+
+### Prerequisites
+
+- Docker installed and running.
+
+### Dependency Workflow (Crucial!)
+
+The Docker image relies on a `requirements.txt` file for Python dependencies. This file is generated locally using Poetry and **must be kept up-to-date and committed to Git** whenever dependencies change.
+
+**When adding/updating/removing dependencies in `pyproject.toml`:**
+
+1.  Modify your `pyproject.toml` file.
+2.  Update the lock file:
+    ```bash
+    poetry lock
+    ```
+3.  Ensure the `poetry-plugin-export` is installed locally (one-time or per environment check):
+    *Check if needed/installed:*
+    ```bash
+    poetry plugin show 
+    ```
+    *Install if needed (for Poetry 2.0+):*
+    ```bash
+    poetry self add poetry-plugin-export
+    ```
+4.  Export dependencies to `requirements.txt`:
+    ```bash
+    poetry export --without dev --format requirements.txt --output requirements.txt
+    ```
+5.  Verify `requirements.txt` was updated (`cat requirements.txt`).
+6.  Commit *all three* files (`pyproject.toml`, `poetry.lock`, `requirements.txt`):
+    ```bash
+    git add pyproject.toml poetry.lock requirements.txt
+    git commit -m "Update project dependencies"
+    ```
+
+### Building the Docker Image
+
+Ensure you have completed the dependency workflow above if dependencies have changed.
+
+```bash
+docker build -t forecasting-api:latest .
+```
+
+### Environment Variables for Docker
+
+The container requires environment variables to run correctly (e.g., database connection strings, external API keys). These should be defined in a `.env` file (based on `.env.example`) in your project root. The docker run command will load these using the `--env-file` flag. Make sure your `.env` file contains all necessary runtime variables.
+
+### Running the Container
+
+Use the image built previously. Ensure your `.env` file is configured.
+
+```bash
+# Run in detached mode (background)
+docker run -d -p 8000:8000 --env-file .env --name forecasting-api-container forecasting-api:latest
+```
+
+- `-d`: Run container in the background (detached).
+- `-p 8000:8000`: Map port 8000 on your host machine to port 8000 inside the container.
+- `--env-file .env`: Load environment variables from your local `.env` file into the container.
+- `--name forecasting-api-container`: Assign a convenient name to the running container.
+- `forecasting-api:latest`: The name and tag of the image to run.
+
+### Accessing the API (via Docker)
+
+Once the container is running:
+
+- API Base URL: http://localhost:8000
+- Swagger UI Docs: http://localhost:8000/docs
+- ReDoc Docs: http://localhost:8000/redoc
+
+### Managing the Container
+
+**View Logs:**
+```bash
+docker logs forecasting-api-container
+```
+
+Add `-f` to follow logs in real-time:
+```bash
+docker logs -f forecasting-api-container
+```
+
+**Stop Container:**
+```bash
+docker stop forecasting-api-container
+```
+
+**Remove Container (after stopping):**
+```bash
+docker rm forecasting-api-container
+```
+
 ## API Documentation
 
 FastAPI automatically generates interactive API documentation:
