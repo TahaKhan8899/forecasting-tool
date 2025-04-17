@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 import structlog
 from contextlib import asynccontextmanager
 
 from app.core.logging_config import setup_logging, LoggingContextMiddleware
+from app.core.config import settings
+from app.api.v1.endpoints import shopify_auth
 
 # Set up structured logging
 setup_logging()
@@ -22,6 +25,15 @@ app = FastAPI(
     description="Backend API for automated forecasting of e-commerce metrics",
     version="0.1.0",
     lifespan=lifespan,
+)
+
+# Add Session Middleware - MUST be before routers that use sessions
+# Requires SESSION_SECRET_KEY to be set in your environment/.env file
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.SESSION_SECRET_KEY,
+    https_only=False,  # Set to True in production if served over HTTPS
+    max_age=14 * 24 * 60 * 60  # Session cookie expiry in seconds (e.g., 14 days)
 )
 
 # Add logging middleware
@@ -52,6 +64,18 @@ async def health_check():
     """Health check endpoint for monitoring."""
     logger.debug("Health check endpoint called")
     return {"status": "healthy"}
+
+# Include API routers
+# Include the Shopify OAuth router
+app.include_router(
+    shopify_auth.router, 
+    prefix=f"{settings.API_V1_STR}/auth/shopify", 
+    tags=["Shopify Auth"]
+)
+
+# Example of including other routers:
+# from app.api.v1.endpoints import other_endpoint
+# app.include_router(other_endpoint.router, prefix=f"{settings.API_V1_STR}/other", tags=["Other"])
 
 # TODO: Include API routers here
 # Example:

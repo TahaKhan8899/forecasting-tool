@@ -13,7 +13,7 @@ from app.core.config import settings
 
 # Import all models so they are registered with Base.metadata
 # This is necessary for Alembic to detect model changes
-from app.models import store
+import app.models # Ensure app.models package (and __init__.py) is loaded
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
